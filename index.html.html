@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Yeşil Kutuları Topla</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, #1e1e1e, #0f0f2f);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+
+  #gameArea {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    background: #222;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 3px solid #fff;
+  }
+
+  .box {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+
+  .box:active {
+    transform: scale(1.2);
+  }
+
+  #score {
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px #000;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameArea"></div>
+<div id="score">Puan: 0</div>
+
+<script>
+const gameArea = document.getElementById('gameArea');
+const scoreDisplay = document.getElementById('score');
+
+let score = 0;
+const maxScore = 20;
+let currentBox = null;
+
+// Kutuları oluşturma fonksiyonu
+function createBox() {
+  if(currentBox) currentBox.remove();
+
+  const box = document.createElement('div');
+  box.classList.add('box');
+
+  // Rastgele renk, sadece bazıları yeşil
+  const colors = ['green', 'red', 'blue', 'yellow'];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  box.style.background = color;
+
+  // Rastgele pozisyon
+  const maxX = gameArea.clientWidth - 60;
+  const maxY = gameArea.clientHeight - 60;
+  box.style.left = Math.random() * maxX + 'px';
+  box.style.top = Math.random() * maxY + 'px';
+
+  box.addEventListener('click', () => {
+    if(color === 'green') {
+      score++;
+      scoreDisplay.textContent = 'Puan: ' + score;
+
+      if(score >= maxScore) {
+        alert('Tebrikler! 20 puana ulaştın!');
+        clearInterval(boxInterval);
+      }
+    } else {
+      alert('Yanlış kutuya tıkladın! Kaybettin!');
+      clearInterval(boxInterval);
+      // Kutuyu kaldır
+      box.remove();
+    }
+    currentBox = null;
+  });
+
+  gameArea.appendChild(box);
+  currentBox = box;
+}
+
+// Başlangıçta kutuyu oluştur
+createBox();
+
+// Her 2 saniyede bir kutuyu değiştir
+const boxInterval = setInterval(() => {
+  createBox();
+}, 2000);
+
+</script>
+
+</body>
+</html>
